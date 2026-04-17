@@ -44,6 +44,26 @@ final class UploadRepository
         $list = $this->all();
         array_unshift($list, $uploadedFile);
 
+        $this->saveAll($list);
+    }
+
+    public function delete(string $storedName): void
+    {
+        $list = $this->all();
+        $filtered = array_filter($list, static fn (UploadedFile $file): bool => $file->storedName !== $storedName);
+
+        if (count($list) === count($filtered)) {
+            return; // Not found, nothing to change
+        }
+
+        $this->saveAll(array_values($filtered));
+    }
+
+    /**
+     * @param array<int, UploadedFile> $list
+     */
+    private function saveAll(array $list): void
+    {
         $serialized = array_map(static fn (UploadedFile $item): array => $item->toArray(), $list);
         $json = json_encode($serialized, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
         if ($json === false) {

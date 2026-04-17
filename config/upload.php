@@ -7,6 +7,8 @@ return [
     'allowed_extensions_by_category' => [
         'image' => ['jpg', 'jpeg', 'png', 'gif', 'webp'],
         'text' => ['txt', 'docx', 'pdf'],
+        'audio' => ['mp3', 'wav', 'ogg'],
+        'video' => ['mp4', 'webm'],
     ],
     'allowed_mime_by_extension' => [
         'jpg' => ['image/jpeg'],
@@ -20,6 +22,11 @@ return [
             'application/zip',
         ],
         'pdf' => ['application/pdf'],
+        'mp3' => ['audio/mpeg', 'application/octet-stream'],
+        'wav' => ['audio/wav', 'audio/x-wav'],
+        'ogg' => ['audio/ogg', 'video/ogg'],
+        'mp4' => ['video/mp4'],
+        'webm' => ['video/webm'],
     ],
     'text_preview_max_length' => 300,
     'image' => [

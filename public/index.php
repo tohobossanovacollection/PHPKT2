@@ -84,5 +84,10 @@ if ($path === '/upload' && $method === 'POST') {
     exit;
 }
 
+if ($path === '/delete' && $method === 'GET') {
+    $uploadController->destroy();
+    exit;
+}
+
 http_response_code(404);
 echo '404 - Not Found';

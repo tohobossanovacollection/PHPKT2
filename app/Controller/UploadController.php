@@ -53,40 +53,114 @@ final class UploadController extends BaseController
 
     public function store(): void
     {
-        $file = $_FILES['upload_file'] ?? null;
+        $rawFile = $_FILES['upload_file'] ?? null;
 
-        if (!is_array($file)) {
-            $_SESSION['error'] = 'Dữ liệu upload không hợp lệ.';
+        if (!$rawFile || !isset($rawFile['name'])) {
+            $_SESSION['error'] = 'Không tìm thấy dữ liệu upload.';
             $this->redirect($this->baseUrl . '/');
+            return;
         }
 
-        try {
-            $storedName = $this->uploader->upload($file, $this->publicUploadDir);
+        $files = $this->normalizeFiles($rawFile);
+        $successCount = 0;
+        $errors = [];
 
-            $tmpUploadPath = $this->publicUploadDir . DIRECTORY_SEPARATOR . $storedName;
-            $finfo = finfo_open(FILEINFO_MIME_TYPE);
-            $mimeType = $finfo ? (string) finfo_file($finfo, $tmpUploadPath) : 'application/octet-stream';
-            if ($finfo) {
-                finfo_close($finfo);
+        foreach ($files as $fileData) {
+            if ($fileData['error'] === UPLOAD_ERR_NO_FILE) {
+                continue;
             }
 
-            $extension = strtolower((string) pathinfo($storedName, PATHINFO_EXTENSION));
-            $category = $this->fileTypeMap->detectCategory($extension);
+            try {
+                $storedName = $this->uploader->upload($fileData, $this->publicUploadDir);
 
-            $uploaded = new UploadedFile(
-                originalName: (string) ($file['name'] ?? $storedName),
-                storedName: $storedName,
-                mimeType: $mimeType,
-                extension: $extension,
-                size: (int) filesize($tmpUploadPath),
-                category: $category,
-                uploadedAt: date('Y-m-d H:i:s')
-            );
+                $tmpUploadPath = $this->publicUploadDir . DIRECTORY_SEPARATOR . $storedName;
+                $finfo = finfo_open(FILEINFO_MIME_TYPE);
+                $mimeType = $finfo ? (string) finfo_file($finfo, $tmpUploadPath) : 'application/octet-stream';
+                if ($finfo) {
+                    finfo_close($finfo);
+                }
 
-            $this->repository->save($uploaded);
-            $_SESSION['success'] = 'Upload file thành công.';
+                $extension = strtolower((string) pathinfo($storedName, PATHINFO_EXTENSION));
+                $category = $this->fileTypeMap->detectCategory($extension);
+
+                $uploaded = new UploadedFile(
+                    originalName: (string) ($fileData['name'] ?? $storedName),
+                    storedName: $storedName,
+                    mimeType: $mimeType,
+                    extension: $extension,
+                    size: (int) filesize($tmpUploadPath),
+                    category: $category,
+                    uploadedAt: date('Y-m-d H:i:s')
+                );
+
+                $this->repository->save($uploaded);
+                $successCount++;
+            } catch (RuntimeException $e) {
+                $errors[] = sprintf('%s: %s', $fileData['name'] ?? 'File', $e->getMessage());
+            }
+        }
+
+        if ($successCount > 0) {
+            $_SESSION['success'] = sprintf('Đã upload thành công %d file.', $successCount);
+        }
+
+        if ($errors !== []) {
+            $_SESSION['error'] = implode('<br>', $errors);
+        }
+
+        $this->redirect($this->baseUrl . '/');
+    }
+
+    /**
+     * @param array<string, mixed> $rawFile
+     * @return array<int, array<string, mixed>>
+     */
+    private function normalizeFiles(array $rawFile): array
+    {
+        if (!is_array($rawFile['name'])) {
+            return [$rawFile];
+        }
+
+        $normalized = [];
+        $count = count($rawFile['name']);
+        $keys = array_keys($rawFile);
+
+        for ($i = 0; $i < $count; $i++) {
+            $item = [];
+            foreach ($keys as $key) {
+                $item[$key] = $rawFile[$key][$i];
+            }
+            $normalized[] = $item;
+        }
+
+        return $normalized;
+    }
+
+    public function destroy(): void
+    {
+        $name = $_GET['name'] ?? null;
+        if ($name === null || $name === '') {
+            $_SESSION['error'] = 'Thiếu tên file cần xóa.';
+            $this->redirect($this->baseUrl . '/');
+            return;
+        }
+
+        // Basic security: prevent path traversal
+        $name = basename($name);
+
+        try {
+            // Delete record from JSON
+            $this->repository->delete($name);
+
+            // Delete physical file
+            $filePath = $this->publicUploadDir . DIRECTORY_SEPARATOR . $name;
+            if (is_file($filePath)) {
+                unlink($filePath);
+            }
+
+            $_SESSION['success'] = 'Đã xóa file khỏi hệ thống.';
         } catch (RuntimeException $e) {
-            $_SESSION['error'] = $e->getMessage();
+            $_SESSION['error'] = 'Lỗi khi xóa file: ' . $e->getMessage();
         }
 
         $this->redirect($this->baseUrl . '/');
