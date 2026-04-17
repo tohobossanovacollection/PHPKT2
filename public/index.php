@@ -16,7 +16,7 @@ use App\Validators\UploadErrorValidator;
 session_start();
 
 $basePath = dirname(__DIR__);
-require_once $basePath . '/app/Core/Autoloader.php';
+require_once $basePath . '/app/Model/Core/Autoloader.php';
 Autoloader::register($basePath . '/app');
 
 $config = require $basePath . '/config/upload.php';

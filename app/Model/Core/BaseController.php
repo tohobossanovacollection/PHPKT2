@@ -12,7 +12,7 @@ abstract class BaseController
     protected function render(string $view, array $data = []): void
     {
         extract($data, EXTR_SKIP);
-        require __DIR__ . '/../Views/' . $view . '.php';
+        require dirname(__DIR__, 2) . '/View/' . $view . '.php';
     }
 
     protected function redirect(string $path): void
