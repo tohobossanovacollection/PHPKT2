@@ -82,55 +82,58 @@ declare(strict_types=1);
             </div>
         </section>
 
-        <h2>File của bạn</h2>
+        <div id="existing_files_section">
+            <h2>File của bạn</h2>
 
-        <?php if ($files === []): ?>
-            <div class="empty-state">
-                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 13h6m-3-3v6m-9 1V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z"></path></svg>
-                <p>Chưa có file nào được tải lên.</p>
-            </div>
-        <?php else: ?>
-            <div class="files-grid">
-                <?php foreach (array_reverse($files) as $item): ?>
-                    <div class="file-card">
-                        <div class="preview-container">
-                            <?php if ($item->category === 'image'): ?>
-                                <img src="<?= htmlspecialchars($baseUrl) ?>/uploads/<?= rawurlencode($item->storedName) ?>" class="preview-img" alt="Preview">
-                            <?php elseif ($item->extension === 'txt'): ?>
-                                <div class="preview-text"><?= htmlspecialchars($textPreviews[$item->storedName] ?? 'No preview') ?></div>
-                            <?php elseif ($item->extension === 'pdf'): ?>
-                                <svg class="preview-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 9h1m0 4h3m-3 4h3"></path></svg>
-                            <?php else: ?>
-                                <svg class="preview-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
-                            <?php endif; ?>
-                        </div>
-                        <div class="file-details">
-                            <span class="file-category"><?= htmlspecialchars($item->category) ?> • <?= htmlspecialchars(strtoupper($item->extension)) ?></span>
-                            <h3 class="file-name" title="<?= htmlspecialchars($item->originalName) ?>"><?= htmlspecialchars($item->originalName) ?></h3>
-                            <div class="file-meta">
-                                <span>Kích thước: <?= htmlspecialchars(number_format($item->size / 1024, 1)) ?> KB</span>
-                                <span>Ngày tải: <?= htmlspecialchars($item->uploadedAt) ?></span>
+            <?php if ($files === []): ?>
+                <div class="empty-state">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 13h6m-3-3v6m-9 1V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z"></path></svg>
+                    <p>Chưa có file nào được tải lên.</p>
+                </div>
+            <?php else: ?>
+                <div class="files-grid">
+                    <?php foreach (array_reverse($files) as $item): ?>
+                        <div class="file-card">
+                            <div class="preview-container">
+                                <?php if ($item->category === 'image'): ?>
+                                    <img src="<?= htmlspecialchars($baseUrl) ?>/uploads/<?= rawurlencode($item->storedName) ?>" class="preview-img" alt="Preview">
+                                <?php elseif ($item->extension === 'txt'): ?>
+                                    <div class="preview-text"><?= htmlspecialchars($textPreviews[$item->storedName] ?? 'No preview') ?></div>
+                                <?php elseif ($item->extension === 'pdf'): ?>
+                                    <svg class="preview-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 9h1m0 4h3m-3 4h3"></path></svg>
+                                <?php else: ?>
+                                    <svg class="preview-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                                <?php endif; ?>
+                            </div>
+                            <div class="file-details">
+                                <span class="file-category"><?= htmlspecialchars($item->category) ?> • <?= htmlspecialchars(strtoupper($item->extension)) ?></span>
+                                <h3 class="file-name" title="<?= htmlspecialchars($item->originalName) ?>"><?= htmlspecialchars($item->originalName) ?></h3>
+                                <div class="file-meta">
+                                    <span>Kích thước: <?= htmlspecialchars(number_format($item->size / 1024, 1)) ?> KB</span>
+                                    <span>Ngày tải: <?= htmlspecialchars($item->uploadedAt) ?></span>
+                                </div>
+                            </div>
+                            <div class="card-actions" style="gap: 1rem;">
+                                <a href="javascript:void(0)" 
+                                   class="action-link" 
+                                   onclick="openViewer('<?= htmlspecialchars($baseUrl) ?>/uploads/<?= rawurlencode($item->storedName) ?>', '<?= $item->category ?>', '<?= $item->extension ?>', '<?= htmlspecialchars($item->originalName) ?>')">
+                                    <span>Xem file</span>
+                                    <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
+                                </a>
+                                <a href="javascript:void(0)" 
+                                   class="action-link" 
+                                   style="color: var(--error);"
+                                   onclick="confirmDelete('<?= htmlspecialchars($baseUrl) ?>/delete?name=<?= urlencode($item->storedName) ?>', '<?= htmlspecialchars($item->originalName) ?>')">
+                                    <span>Xóa</span>
+                                    <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                                </a>
                             </div>
                         </div>
-                        <div class="card-actions" style="gap: 1rem;">
-                            <a href="javascript:void(0)" 
-                               class="action-link" 
-                               onclick="openViewer('<?= htmlspecialchars($baseUrl) ?>/uploads/<?= rawurlencode($item->storedName) ?>', '<?= $item->category ?>', '<?= $item->extension ?>', '<?= htmlspecialchars($item->originalName) ?>')">
-                                <span>Xem file</span>
-                                <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
-                            </a>
-                            <a href="javascript:void(0)" 
-                               class="action-link" 
-                               style="color: var(--error);"
-                               onclick="confirmDelete('<?= htmlspecialchars($baseUrl) ?>/delete?name=<?= urlencode($item->storedName) ?>', '<?= htmlspecialchars($item->originalName) ?>')">
-                                <span>Xóa</span>
-                                <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
-                            </a>
-                        </div>
-                    </div>
-                <?php endforeach; ?>
-            </div>
-        <?php endif; ?>
+                    <?php endforeach; ?>
+                </div>
+            <?php endif; ?>
+        </div>
+
     </main>
 
     <!-- Modal Xem Chi Tiết File -->
@@ -178,11 +181,36 @@ declare(strict_types=1);
         const selectedFilesNames = document.getElementById('selected_files_names');
         const dropZoneText = document.getElementById('drop_zone_text');
 
+        // Mảng lưu trữ danh sách file đã chọn để tích lũy
+        let selectedFiles = [];
+
         function updateFileList() {
-            const files = fileInput.files;
-            if (files.length > 0) {
+            const newFiles = Array.from(fileInput.files);
+            
+            // Tích lũy file mới, tránh trùng lặp nếu chọn lại cùng 1 file
+            newFiles.forEach(file => {
+                const isDuplicate = selectedFiles.some(f => 
+                    f.name === file.name && 
+                    f.size === file.size && 
+                    f.lastModified === file.lastModified
+                );
+                if (!isDuplicate) {
+                    selectedFiles.push(file);
+                }
+            });
+
+            renderFileList();
+        }
+
+        function renderFileList() {
+            // Cập nhật lại fileInput.files từ mảng tích lũy để form submit đúng
+            const dt = new DataTransfer();
+            selectedFiles.forEach(file => dt.items.add(file));
+            fileInput.files = dt.files;
+
+            if (selectedFiles.length > 0) {
                 selectedFilesNames.innerHTML = '';
-                Array.from(files).forEach((file, index) => {
+                selectedFiles.forEach((file, index) => {
                     const li = document.createElement('li');
                     li.className = 'selected-file-item';
                     
@@ -247,20 +275,12 @@ declare(strict_types=1);
         }
 
         function removeFile(indexToRemove) {
-            const dt = new DataTransfer();
-            const files = fileInput.files;
-            
-            for (let i = 0; i < files.length; i++) {
-                if (i !== indexToRemove) {
-                    dt.items.add(files[i]);
-                }
-            }
-            
-            fileInput.files = dt.files;
-            updateFileList();
+            selectedFiles.splice(indexToRemove, 1);
+            renderFileList();
         }
 
         fileInput.addEventListener('change', updateFileList);
+
 
         ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
             dropZone.addEventListener(eventName, preventDefaults, false);

@@ -59,6 +59,12 @@ final class UploadRepository
         $this->saveAll(array_values($filtered));
     }
 
+    public function clearAll(): void
+    {
+        $this->saveAll([]);
+    }
+
+
     /**
      * @param array<int, UploadedFile> $list
      */

@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 return [
-    'max_size' => 5 * 1024 * 1024, // 5MB
+    'max_size' => 50 * 1024 * 1024, // 50MB
     'allowed_extensions_by_category' => [
         'image' => ['jpg', 'jpeg', 'png', 'gif', 'webp'],
         'text' => ['txt', 'docx', 'pdf'],

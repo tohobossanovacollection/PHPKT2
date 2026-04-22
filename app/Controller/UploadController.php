@@ -62,6 +62,8 @@ final class UploadController extends BaseController
         }
 
         $files = $this->normalizeFiles($rawFile);
+
+
         $successCount = 0;
         $errors = [];
 
