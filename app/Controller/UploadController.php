@@ -28,7 +28,8 @@ final class UploadController extends BaseController
 
     public function index(): void
     {
-        $files = $this->repository->all();
+        $user = $this->requireAuth($this->baseUrl . '/login');
+        $files = $this->repository->allByOwner($user['id']);
         $previewMax = (int) ($this->config['text_preview_max_length'] ?? 300);
 
         $textPreviews = [];
@@ -46,6 +47,7 @@ final class UploadController extends BaseController
             'error' => $_SESSION['error'] ?? null,
             'success' => $_SESSION['success'] ?? null,
             'baseUrl' => $this->baseUrl,
+            'currentUser' => $user,
         ]);
 
         unset($_SESSION['error'], $_SESSION['success']);
@@ -53,6 +55,7 @@ final class UploadController extends BaseController
 
     public function store(): void
     {
+        $user = $this->requireAuth($this->baseUrl . '/login');
         $rawFile = $_FILES['upload_file'] ?? null;
 
         if (!$rawFile || !isset($rawFile['name'])) {
@@ -86,6 +89,7 @@ final class UploadController extends BaseController
                 $category = $this->fileTypeMap->detectCategory($extension);
 
                 $uploaded = new UploadedFile(
+                    ownerId: $user['id'],
                     originalName: (string) ($fileData['name'] ?? $storedName),
                     storedName: $storedName,
                     mimeType: $mimeType,
@@ -140,6 +144,7 @@ final class UploadController extends BaseController
 
     public function destroy(): void
     {
+        $user = $this->requireAuth($this->baseUrl . '/login');
         $name = $_GET['name'] ?? null;
         if ($name === null || $name === '') {
             $_SESSION['error'] = 'Thiếu tên file cần xóa.';
@@ -151,8 +156,12 @@ final class UploadController extends BaseController
         $name = basename($name);
 
         try {
-            // Delete record from JSON
-            $this->repository->delete($name);
+            $deleted = $this->repository->deleteForOwner($name, $user['id']);
+            if (!$deleted) {
+                $_SESSION['error'] = 'Không tìm thấy file thuộc tài khoản của bạn.';
+                $this->redirect($this->baseUrl . '/');
+                return;
+            }
 
             // Delete physical file
             $filePath = $this->publicUploadDir . DIRECTORY_SEPARATOR . $name;

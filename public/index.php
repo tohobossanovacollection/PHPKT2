@@ -3,9 +3,11 @@
 declare(strict_types=1);
 
 use App\Controllers\UploadController;
+use App\Controllers\AuthController;
 use App\Core\Autoloader;
 use App\Core\Container;
 use App\Repositories\UploadRepository;
+use App\Repositories\UserRepository;
 use App\Services\FileTypeMap;
 use App\Services\FileUploader;
 use App\Services\ImageProcessor;
@@ -41,6 +43,10 @@ $container->bind('repository', static function (Container $c): UploadRepository 
     return new UploadRepository($c->get('basePath') . '/storage/uploads.json');
 });
 
+$container->bind('repository.user', static function (Container $c): UserRepository {
+    return new UserRepository($c->get('basePath') . '/storage/users.json');
+});
+
 $container->bind('fileTypeMap', static fn (Container $c): FileTypeMap => new FileTypeMap($c->get('config')['allowed_extensions_by_category']));
 
 $container->bind('uploader', static function (Container $c): FileUploader {
@@ -69,10 +75,44 @@ $container->bind('controller.upload', static function (Container $c): UploadCont
         $c->get('baseUrl')
     );
 });
+
+$container->bind('controller.auth', static function (Container $c): AuthController {
+    return new AuthController(
+        $c->get('repository.user'),
+        $c->get('baseUrl')
+    );
+});
 $method = strtoupper($_SERVER['REQUEST_METHOD'] ?? 'GET');
 
 /** @var UploadController $uploadController */
 $uploadController = $container->get('controller.upload');
+/** @var AuthController $authController */
+$authController = $container->get('controller.auth');
+
+if ($path === '/login' && $method === 'GET') {
+    $authController->showLogin();
+    exit;
+}
+
+if ($path === '/login' && $method === 'POST') {
+    $authController->login();
+    exit;
+}
+
+if ($path === '/register' && $method === 'GET') {
+    $authController->showRegister();
+    exit;
+}
+
+if ($path === '/register' && $method === 'POST') {
+    $authController->register();
+    exit;
+}
+
+if ($path === '/logout' && $method === 'GET') {
+    $authController->logout();
+    exit;
+}
 
 if ($path === '/' && $method === 'GET') {
     $uploadController->index();

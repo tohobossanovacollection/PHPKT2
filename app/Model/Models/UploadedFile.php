@@ -6,6 +6,7 @@ namespace App\Models;
 
 final class UploadedFile
 {
+    public string $ownerId;
     public string $originalName;
     public string $storedName;
     public string $mimeType;
@@ -15,6 +16,7 @@ final class UploadedFile
     public string $uploadedAt;
 
     public function __construct(
+        string $ownerId,
         string $originalName,
         string $storedName,
         string $mimeType,
@@ -23,6 +25,7 @@ final class UploadedFile
         string $category,
         string $uploadedAt
     ) {
+        $this->ownerId = $ownerId;
         $this->originalName = $originalName;
         $this->storedName = $storedName;
         $this->mimeType = $mimeType;
@@ -38,6 +41,7 @@ final class UploadedFile
     public static function fromArray(array $data): self
     {
         return new self(
+            (string) ($data['ownerId'] ?? ''),
             (string) ($data['originalName'] ?? ''),
             (string) ($data['storedName'] ?? ''),
             (string) ($data['mimeType'] ?? ''),
@@ -54,6 +58,7 @@ final class UploadedFile
     public function toArray(): array
     {
         return [
+            'ownerId' => $this->ownerId,
             'originalName' => $this->originalName,
             'storedName' => $this->storedName,
             'mimeType' => $this->mimeType,

@@ -9,6 +9,7 @@ declare(strict_types=1);
 /** @var string|null $error */
 /** @var string|null $success */
 /** @var string $baseUrl */
+/** @var array{id: string, username: string} $currentUser */
 ?>
 <!DOCTYPE html>
 <html lang="vi">
@@ -23,7 +24,16 @@ declare(strict_types=1);
 </head>
 <body>
     <nav class="navbar">
-        <h1>CloudUploader Pro</h1>
+        <div class="navbar-content">
+            <h1>CloudUploader Pro</h1>
+            <div class="navbar-actions">
+                <span class="navbar-user">@<?= htmlspecialchars($currentUser['username']) ?></span>
+                <a href="<?= htmlspecialchars($baseUrl) ?>/logout" class="navbar-link">
+                    <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+                    <span>Đăng xuất</span>
+                </a>
+            </div>
+        </div>
     </nav>
 
     <main class="container">

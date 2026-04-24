@@ -47,6 +47,17 @@ final class UploadRepository
         $this->saveAll($list);
     }
 
+    /**
+     * @return array<int, UploadedFile>
+     */
+    public function allByOwner(string $ownerId): array
+    {
+        return array_values(array_filter(
+            $this->all(),
+            static fn (UploadedFile $file): bool => $file->ownerId === $ownerId
+        ));
+    }
+
     public function delete(string $storedName): void
     {
         $list = $this->all();
@@ -57,6 +68,28 @@ final class UploadRepository
         }
 
         $this->saveAll(array_values($filtered));
+    }
+
+    public function deleteForOwner(string $storedName, string $ownerId): bool
+    {
+        $list = $this->all();
+        $deleted = false;
+
+        $filtered = array_filter($list, static function (UploadedFile $file) use ($storedName, $ownerId, &$deleted): bool {
+            if ($file->storedName === $storedName && $file->ownerId === $ownerId) {
+                $deleted = true;
+                return false;
+            }
+
+            return true;
+        });
+
+        if (!$deleted) {
+            return false;
+        }
+
+        $this->saveAll(array_values($filtered));
+        return true;
     }
 
     public function clearAll(): void

@@ -1,0 +1,14 @@
+[
+    {
+        "id": "a24fc9816bd81003c7869e914d644791",
+        "username": "levents",
+        "passwordHash": "$2y$10$yI9EDR4omhGzarbn0wlCAO\/F.CPp9eOj3j937kN3Zq1xZXRymodiq",
+        "createdAt": "2026-04-24 18:30:14"
+    },
+    {
+        "id": "b8edc09c4ba1b6a0e8e12fc9c155fbbd",
+        "username": "haphcc",
+        "passwordHash": "$2y$10$CfCYB2HipLyP5PKetHngsOjj4JjBS.Hgbfj\/szgflgyKu0Ad5y3WW",
+        "createdAt": "2026-04-24 18:30:43"
+    }
+]
