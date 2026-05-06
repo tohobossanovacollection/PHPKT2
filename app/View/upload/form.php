@@ -124,29 +124,19 @@ declare(strict_types=1);
                                 </div>
                             </div>
                             <div class="card-actions" style="gap: 1rem;">
-                                <button
-                                    type="button"
-                                    class="action-link"
-                                    data-view-file
-                                    data-url="<?= htmlspecialchars($baseUrl, ENT_QUOTES) ?>/uploads/<?= rawurlencode($item->storedName) ?>"
-                                    data-category="<?= htmlspecialchars($item->category, ENT_QUOTES) ?>"
-                                    data-ext="<?= htmlspecialchars($item->extension, ENT_QUOTES) ?>"
-                                    data-name="<?= htmlspecialchars($item->originalName, ENT_QUOTES) ?>"
-                                >
+                                <a href="javascript:void(0)" 
+                                   class="action-link" 
+                                   onclick="openViewer('<?= htmlspecialchars($baseUrl) ?>/uploads/<?= rawurlencode($item->storedName) ?>', '<?= $item->category ?>', '<?= $item->extension ?>', '<?= htmlspecialchars($item->originalName) ?>')">
                                     <span>Xem file</span>
                                     <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
-                                </button>
-                                <button
-                                    type="button"
-                                    class="action-link"
-                                    style="color: var(--error);"
-                                    data-delete-file
-                                    data-url="<?= htmlspecialchars($baseUrl, ENT_QUOTES) ?>/delete?name=<?= urlencode($item->storedName) ?>"
-                                    data-name="<?= htmlspecialchars($item->originalName, ENT_QUOTES) ?>"
-                                >
+                                </a>
+                                <a href="javascript:void(0)" 
+                                   class="action-link" 
+                                   style="color: var(--error);"
+                                   onclick="confirmDelete('<?= htmlspecialchars($baseUrl) ?>/delete?name=<?= urlencode($item->storedName) ?>', '<?= htmlspecialchars($item->originalName) ?>')">
                                     <span>Xóa</span>
                                     <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
-                                </button>
+                                </a>
                             </div>
                         </div>
                     <?php endforeach; ?>
@@ -332,25 +322,6 @@ declare(strict_types=1);
         const deleteModal = document.getElementById('delete_modal');
         const confirmDeleteBtn = document.getElementById('confirm_delete_btn');
         const deleteModalText = document.getElementById('delete_modal_text');
-        const viewFileButtons = document.querySelectorAll('[data-view-file]');
-        const deleteFileButtons = document.querySelectorAll('[data-delete-file]');
-
-        viewFileButtons.forEach((button) => {
-            button.addEventListener('click', () => {
-                openViewer(
-                    button.dataset.url,
-                    button.dataset.category,
-                    button.dataset.ext,
-                    button.dataset.name
-                );
-            });
-        });
-
-        deleteFileButtons.forEach((button) => {
-            button.addEventListener('click', () => {
-                confirmDelete(button.dataset.url, button.dataset.name);
-            });
-        });
 
         function confirmDelete(url, fileName) {
             deleteModalText.textContent = `Bạn có chắc chắn muốn xóa file "${fileName}" không? Hành động này không thể hoàn tác.`;
