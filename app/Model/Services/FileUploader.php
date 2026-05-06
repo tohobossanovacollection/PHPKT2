@@ -38,6 +38,7 @@ final class FileUploader
     /**
      * @param array<string, mixed> $file
      */
+    //nếu upload thì nó sẽ kiểm tra các validator, sau đó nó move file vào thư mục upload
     public function upload(array $file, string $destination): string
     {
         foreach ($this->validators as $validator) {

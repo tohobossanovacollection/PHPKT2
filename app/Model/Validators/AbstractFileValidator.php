@@ -6,6 +6,7 @@ namespace App\Validators;
 
 use App\Interfaces\FileValidatorInterface;
 
+#người dùng up file lên lỗi (fail validator), thi file này lấy error message để in ra
 abstract class AbstractFileValidator implements FileValidatorInterface
 {
     protected string $error = '';

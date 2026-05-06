@@ -17,7 +17,7 @@ final class Autoloader
         'Traits' => 'Model/Traits',
         'Validators' => 'Model/Validators',
     ];
-
+//code logic để hệ thống hiểu đường dẫn nêu ở trên là trỏ về directory nào trong thư mục
     public static function register(string $basePath): void
     {
         spl_autoload_register(static function (string $className) use ($basePath): void {
