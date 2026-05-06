@@ -10,5 +10,11 @@
         "username": "haphcc",
         "passwordHash": "$2y$10$CfCYB2HipLyP5PKetHngsOjj4JjBS.Hgbfj\/szgflgyKu0Ad5y3WW",
         "createdAt": "2026-04-24 18:30:43"
+    },
+    {
+        "id": "81b13a200780dc052c10a83fdd361e19",
+        "username": "1234",
+        "passwordHash": "$2y$10$AR8iOHPMgTH8JIz7uqNQAOI.WGDyamDJPXsb\/RcMMLWtfdmF9a892",
+        "createdAt": "2026-05-06 13:18:07"
     }
 ]

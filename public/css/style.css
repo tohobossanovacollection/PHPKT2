@@ -377,6 +377,15 @@ body {
     gap: 0.25rem;
 }
 
+button.action-link {
+    background: transparent;
+    border: 0;
+    padding: 0;
+    cursor: pointer;
+    font: inherit;
+    appearance: none;
+}
+
 .action-link:hover {
     text-decoration: underline;
 }
